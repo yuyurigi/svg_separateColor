@@ -3,7 +3,8 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
     ofSetVerticalSync(true);
-    ofSetFrameRate(2);
+    ofSetFrameRate(60);
+    frameCount = 0;
     
     svg.load("LSNOT.svg");
     for (ofPath p: svg.getPaths()){
@@ -53,7 +54,7 @@ void ofApp::setColor(){
     }
     
     if(colorScheme == 2){
-    bgColor = ofColor::fromHex(0xf6eced); //うすいピンク
+    bgColor = ofColor::fromHex(0xf6eced);
     stColor = ofColor::fromHex(0xf6eced); //うすいピンク
         colors[0] = (ofColor::fromHex(0xbce2bf)); //黄緑
         colors[1] = (ofColor::fromHex(0xfdb759)); //オレンジ
@@ -73,11 +74,13 @@ void ofApp::update(){
         setColor();
         bCset = false;
     }
-    ofBackground(bgColor);
     
     ofxNanoVG::Canvas& c = canvas;
-    c.begin();
     
+    ofFloatColor bgColor_f = ofFloatColor(bgColor.r/255.0f, bgColor.g/255.0f, bgColor.b/255.0f);
+    c.background(bgColor_f.r, bgColor_f.g, bgColor_f.b); //float color
+    c.begin();
+
     c.lineCap(ofxNanoVG::LineCap::ROUND);
     c.lineJoin(ofxNanoVG::LineCap::ROUND);
     c.lineWidth(lWidth);
@@ -93,8 +96,14 @@ void ofApp::update(){
         int num = line.size();
         
         if (randomFill) {
-            
-            int r = (int)ofRandom(NUM);
+            int r;
+            if (frameCount == 0) {
+                r = (int)ofRandom(NUM);
+            } else {
+                if (frameCount % 30 == 0) {
+                    r = (int)ofRandom(NUM);
+                }
+            }
                 
             c.fillColor(colors[r]);
         }
@@ -117,7 +126,14 @@ void ofApp::update(){
         
         if(randomStroke){
             
-            int r = (int)ofRandom(NUM);
+            int r;
+            if (frameCount == 0) {
+                r = (int)ofRandom(NUM);
+            } else {
+                if (frameCount % 30 == 0) {
+                    r = (int)ofRandom(NUM);
+                }
+            }
             c.strokeColor(colors[r]);
         }
         
@@ -151,9 +167,10 @@ void ofApp::keyPressed(int key){
         bHide = !bHide;
     }
     if (key == 'S' || key == 's') {
-            myImage.grabScreen(0, 0, ofGetWidth(), ofGetHeight());
-            myImage.save(ofGetTimestampString("%Y%m%d%H%M%S")+"##.png");
-        }
+        ofImage myImage;
+        myImage.grabScreen(0, 0, ofGetWidth(), ofGetHeight());
+        myImage.save(ofGetTimestampString("%Y%m%d%H%M%S")+"##.png");
+    }
 
 }
 

@@ -28,7 +28,6 @@ class ofApp : public ofBaseApp{
     
     void setColor();
     
-    ofImage myImage;
     ofxSVG svg;
     vector<ofPolyline> outlines;
     int svgSize;
@@ -36,6 +35,7 @@ class ofApp : public ofBaseApp{
     ofColor colors[NUM];
     bool bCset;
     int cs;
+    int frameCount;
     
     ofxNanoVG::Canvas canvas;
     
